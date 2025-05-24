@@ -1,12 +1,35 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from 'react';
+import { Dashboard } from '@/components/Dashboard';
+import { AddTransaction } from '@/components/AddTransaction';
+import { Analytics } from '@/components/Analytics';
+import { Settings } from '@/components/Settings';
+import { Navigation } from '@/components/Navigation';
 
 const Index = () => {
+  const [activeTab, setActiveTab] = useState('dashboard');
+
+  const renderActiveComponent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return <Dashboard />;
+      case 'add':
+        return <AddTransaction onBack={() => setActiveTab('dashboard')} />;
+      case 'analytics':
+        return <Analytics />;
+      case 'settings':
+        return <Settings />;
+      default:
+        return <Dashboard />;
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="flex-1 overflow-auto">
+        {renderActiveComponent()}
       </div>
+      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
   );
 };
