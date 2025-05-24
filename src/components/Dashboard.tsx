@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, TrendingDown, DollarSign, Receipt, Mic, Camera } from 'lucide-react';
 
-const COLORS = ['#10B981', '#EF4444', '#F59E0B', '#8B5CF6', '#06B6D4'];
+const COLORS = ['#F59E0B', '#EF4444', '#10B981', '#8B5CF6', '#06B6D4'];
 
 const recentTransactions = [
   { id: 1, description: 'Coffee sales', amount: 150, type: 'income', category: 'Sales', time: '2 hours ago' },
@@ -14,9 +14,9 @@ const recentTransactions = [
 ];
 
 const categoryData = [
-  { name: 'Sales', value: 2450, color: '#10B981' },
+  { name: 'Sales', value: 2450, color: '#F59E0B' },
   { name: 'Supplies', value: 890, color: '#EF4444' },
-  { name: 'Transportation', value: 245, color: '#F59E0B' },
+  { name: 'Transportation', value: 245, color: '#10B981' },
   { name: 'Marketing', value: 150, color: '#8B5CF6' },
 ];
 
@@ -36,7 +36,7 @@ export const Dashboard = () => {
   const profit = totalIncome - totalExpenses;
 
   return (
-    <div className="p-4 pb-20">
+    <div className="p-4 pb-20 bg-yellow-50 min-h-screen">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Dashboard</h1>
         <p className="text-gray-600">Welcome back! Here's your business overview.</p>
@@ -44,33 +44,33 @@ export const Dashboard = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card className="p-4 bg-gradient-to-r from-green-50 to-green-100 border-green-200">
+        <Card className="p-4 bg-gradient-to-r from-yellow-100 to-yellow-200 border-yellow-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-green-600">Total Income</p>
-              <p className="text-2xl font-bold text-green-900">${totalIncome}</p>
+              <p className="text-sm font-medium text-yellow-700">Total Income</p>
+              <p className="text-2xl font-bold text-yellow-900">${totalIncome}</p>
             </div>
-            <TrendingUp className="h-8 w-8 text-green-600" />
+            <TrendingUp className="h-8 w-8 text-yellow-700" />
           </div>
         </Card>
 
-        <Card className="p-4 bg-gradient-to-r from-red-50 to-red-100 border-red-200">
+        <Card className="p-4 bg-gradient-to-r from-orange-100 to-orange-200 border-orange-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-red-600">Total Expenses</p>
-              <p className="text-2xl font-bold text-red-900">${totalExpenses}</p>
+              <p className="text-sm font-medium text-orange-700">Total Expenses</p>
+              <p className="text-2xl font-bold text-orange-900">${totalExpenses}</p>
             </div>
-            <TrendingDown className="h-8 w-8 text-red-600" />
+            <TrendingDown className="h-8 w-8 text-orange-700" />
           </div>
         </Card>
 
-        <Card className="p-4 bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200">
+        <Card className="p-4 bg-gradient-to-r from-indigo-100 to-indigo-200 border-indigo-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-blue-600">Net Profit</p>
-              <p className="text-2xl font-bold text-blue-900">${profit}</p>
+              <p className="text-sm font-medium text-indigo-700">Net Profit</p>
+              <p className="text-2xl font-bold text-indigo-900">${profit}</p>
             </div>
-            <DollarSign className="h-8 w-8 text-blue-600" />
+            <DollarSign className="h-8 w-8 text-indigo-700" />
           </div>
         </Card>
       </div>
@@ -79,11 +79,11 @@ export const Dashboard = () => {
       <Card className="p-4 mb-6">
         <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 gap-3">
-          <Button className="h-16 flex flex-col gap-2 bg-blue-600 hover:bg-blue-700">
+          <Button className="h-16 flex flex-col gap-2 bg-indigo-600 hover:bg-indigo-700">
             <Mic className="h-5 w-5" />
             <span className="text-sm">Voice Entry</span>
           </Button>
-          <Button className="h-16 flex flex-col gap-2 bg-green-600 hover:bg-green-700">
+          <Button className="h-16 flex flex-col gap-2 bg-orange-500 hover:bg-orange-600">
             <Camera className="h-5 w-5" />
             <span className="text-sm">Scan Receipt</span>
           </Button>
@@ -100,8 +100,8 @@ export const Dashboard = () => {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="income" fill="#10B981" name="Income" />
-              <Bar dataKey="expenses" fill="#EF4444" name="Expenses" />
+              <Bar dataKey="income" fill="#F59E0B" name="Income" />
+              <Bar dataKey="expenses" fill="#EA580C" name="Expenses" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -138,15 +138,15 @@ export const Dashboard = () => {
           {recentTransactions.map((transaction) => (
             <div key={transaction.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-full ${transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'}`}>
-                  <Receipt className={`h-4 w-4 ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`} />
+                <div className={`p-2 rounded-full ${transaction.type === 'income' ? 'bg-yellow-100' : 'bg-orange-100'}`}>
+                  <Receipt className={`h-4 w-4 ${transaction.type === 'income' ? 'text-yellow-600' : 'text-orange-600'}`} />
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">{transaction.description}</p>
                   <p className="text-sm text-gray-500">{transaction.category} • {transaction.time}</p>
                 </div>
               </div>
-              <p className={`font-semibold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+              <p className={`font-semibold ${transaction.type === 'income' ? 'text-yellow-600' : 'text-orange-600'}`}>
                 {transaction.type === 'income' ? '+' : ''}${Math.abs(transaction.amount)}
               </p>
             </div>

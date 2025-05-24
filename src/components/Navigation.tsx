@@ -16,7 +16,7 @@ export const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-yellow-200 px-4 py-2">
       <div className="flex justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -30,7 +30,7 @@ export const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
               onClick={() => onTabChange(item.id)}
               className={`flex flex-col gap-1 h-12 px-3 ${
                 isActive 
-                  ? 'text-blue-600 bg-blue-50' 
+                  ? 'text-indigo-600 bg-yellow-50' 
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >

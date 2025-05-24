@@ -82,7 +82,7 @@ export const AddTransaction = ({ onBack }: AddTransactionProps) => {
   };
 
   return (
-    <div className="p-4 pb-20">
+    <div className="p-4 pb-20 bg-yellow-50 min-h-screen">
       <div className="mb-6">
         <Button variant="ghost" onClick={onBack} className="mb-4">
           ← Back to Dashboard
@@ -98,7 +98,7 @@ export const AddTransaction = ({ onBack }: AddTransactionProps) => {
           <Button 
             onClick={handleVoiceInput}
             disabled={isListening}
-            className="h-20 flex flex-col gap-2 bg-blue-600 hover:bg-blue-700"
+            className="h-20 flex flex-col gap-2 bg-indigo-600 hover:bg-indigo-700"
           >
             <Mic className={`h-6 w-6 ${isListening ? 'animate-pulse' : ''}`} />
             <span className="text-sm">
@@ -108,14 +108,14 @@ export const AddTransaction = ({ onBack }: AddTransactionProps) => {
           
           <Button 
             onClick={handleImageUpload}
-            className="h-20 flex flex-col gap-2 bg-green-600 hover:bg-green-700"
+            className="h-20 flex flex-col gap-2 bg-orange-500 hover:bg-orange-600"
           >
             <Camera className="h-6 w-6" />
             <span className="text-sm">Scan Receipt</span>
           </Button>
           
           <Button 
-            className="h-20 flex flex-col gap-2 bg-purple-600 hover:bg-purple-700"
+            className="h-20 flex flex-col gap-2 bg-yellow-500 hover:bg-yellow-600"
           >
             <Upload className="h-6 w-6" />
             <span className="text-sm">Upload Image</span>
@@ -130,7 +130,7 @@ export const AddTransaction = ({ onBack }: AddTransactionProps) => {
           <Button
             onClick={() => setType('income')}
             variant={type === 'income' ? 'default' : 'outline'}
-            className={`h-16 flex flex-col gap-2 ${type === 'income' ? 'bg-green-600 hover:bg-green-700' : ''}`}
+            className={`h-16 flex flex-col gap-2 ${type === 'income' ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
           >
             <ArrowUp className="h-5 w-5" />
             <span>Income</span>
@@ -138,7 +138,7 @@ export const AddTransaction = ({ onBack }: AddTransactionProps) => {
           <Button
             onClick={() => setType('expense')}
             variant={type === 'expense' ? 'default' : 'outline'}
-            className={`h-16 flex flex-col gap-2 ${type === 'expense' ? 'bg-red-600 hover:bg-red-700' : ''}`}
+            className={`h-16 flex flex-col gap-2 ${type === 'expense' ? 'bg-orange-500 hover:bg-orange-600' : ''}`}
           >
             <ArrowDown className="h-5 w-5" />
             <span>Expense</span>
@@ -193,7 +193,7 @@ export const AddTransaction = ({ onBack }: AddTransactionProps) => {
       {/* Submit Button */}
       <Button 
         onClick={handleSubmit}
-        className="w-full h-12 text-lg font-semibold"
+        className="w-full h-12 text-lg font-semibold bg-indigo-600 hover:bg-indigo-700"
         size="lg"
       >
         Save Transaction

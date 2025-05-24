@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -9,7 +8,7 @@ import { User, Bell, Shield, Download, Upload, Smartphone } from 'lucide-react';
 
 export const Settings = () => {
   return (
-    <div className="p-4 pb-20">
+    <div className="p-4 pb-20 bg-yellow-50 min-h-screen">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Settings</h1>
         <p className="text-gray-600">Customize your app experience</p>
@@ -18,7 +17,7 @@ export const Settings = () => {
       {/* Profile Settings */}
       <Card className="p-4 mb-6">
         <div className="flex items-center gap-3 mb-4">
-          <User className="h-5 w-5 text-blue-600" />
+          <User className="h-5 w-5 text-indigo-600" />
           <h3 className="text-lg font-semibold">Profile</h3>
         </div>
         <div className="space-y-4">
@@ -50,7 +49,7 @@ export const Settings = () => {
       {/* Notifications */}
       <Card className="p-4 mb-6">
         <div className="flex items-center gap-3 mb-4">
-          <Bell className="h-5 w-5 text-green-600" />
+          <Bell className="h-5 w-5 text-orange-600" />
           <h3 className="text-lg font-semibold">Notifications</h3>
         </div>
         <div className="space-y-4">
@@ -81,7 +80,7 @@ export const Settings = () => {
       {/* Data & Privacy */}
       <Card className="p-4 mb-6">
         <div className="flex items-center gap-3 mb-4">
-          <Shield className="h-5 w-5 text-purple-600" />
+          <Shield className="h-5 w-5 text-yellow-600" />
           <h3 className="text-lg font-semibold">Data & Privacy</h3>
         </div>
         <div className="space-y-4">
@@ -116,15 +115,15 @@ export const Settings = () => {
           <h3 className="text-lg font-semibold">Data Management</h3>
         </div>
         <div className="space-y-3">
-          <Button variant="outline" className="w-full justify-start">
+          <Button variant="outline" className="w-full justify-start border-yellow-300 hover:bg-yellow-100">
             <Download className="h-4 w-4 mr-2" />
             Export Data
           </Button>
-          <Button variant="outline" className="w-full justify-start">
+          <Button variant="outline" className="w-full justify-start border-yellow-300 hover:bg-yellow-100">
             <Upload className="h-4 w-4 mr-2" />
             Import Data
           </Button>
-          <Button variant="outline" className="w-full justify-start text-blue-600">
+          <Button variant="outline" className="w-full justify-start text-indigo-600 border-indigo-300 hover:bg-indigo-50">
             <Smartphone className="h-4 w-4 mr-2" />
             Sync Across Devices
           </Button>
@@ -170,9 +169,9 @@ export const Settings = () => {
       <Card className="p-4">
         <h3 className="text-lg font-semibold mb-4">About</h3>
         <div className="space-y-2 text-sm text-gray-600">
-          <p>SmallBiz Tracker v1.0.0</p>
+          <p>ProfitPal v1.0.0</p>
           <p>Built for small business owners</p>
-          <p>© 2024 SmallBiz Solutions</p>
+          <p>© 2024 ProfitPal Solutions</p>
         </div>
       </Card>
     </div>
