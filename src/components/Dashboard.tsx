@@ -3,37 +3,79 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, TrendingDown, DollarSign, Receipt, Mic, Camera } from 'lucide-react';
+import { useTransactions } from '@/hooks/useTransactions';
+import { useMemo } from 'react';
 
 const COLORS = ['#F59E0B', '#EF4444', '#10B981', '#8B5CF6', '#06B6D4'];
 
-const recentTransactions = [
-  { id: 1, description: 'Coffee sales', amount: 150, type: 'income', category: 'Sales', time: '2 hours ago' },
-  { id: 2, description: 'Office supplies', amount: -45, type: 'expense', category: 'Supplies', time: '4 hours ago' },
-  { id: 3, description: 'Catering order', amount: 300, type: 'income', category: 'Sales', time: '1 day ago' },
-  { id: 4, description: 'Gas for delivery', amount: -35, type: 'expense', category: 'Transportation', time: '1 day ago' },
-];
-
-const categoryData = [
-  { name: 'Sales', value: 2450, color: '#F59E0B' },
-  { name: 'Supplies', value: 890, color: '#EF4444' },
-  { name: 'Transportation', value: 245, color: '#10B981' },
-  { name: 'Marketing', value: 150, color: '#8B5CF6' },
-];
-
-const weeklyData = [
-  { name: 'Mon', income: 400, expenses: 240 },
-  { name: 'Tue', income: 300, expenses: 139 },
-  { name: 'Wed', income: 200, expenses: 980 },
-  { name: 'Thu', income: 278, expenses: 390 },
-  { name: 'Fri', income: 189, expenses: 480 },
-  { name: 'Sat', income: 239, expenses: 380 },
-  { name: 'Sun', income: 349, expenses: 430 },
-];
-
 export const Dashboard = () => {
-  const totalIncome = 3250;
-  const totalExpenses = 1890;
-  const profit = totalIncome - totalExpenses;
+  const { transactions, totalIncome, totalExpenses, profit, isLoading } = useTransactions();
+
+  const { recentTransactions, categoryData, weeklyData } = useMemo(() => {
+    // Get recent transactions (last 5)
+    const recentTransactions = transactions.slice(0, 5).map(t => ({
+      id: t.id,
+      description: t.description,
+      amount: Number(t.amount),
+      type: t.type,
+      category: t.category,
+      time: new Date(t.transaction_date).toLocaleDateString(),
+    }));
+
+    // Group expenses by category
+    const expensesByCategory = transactions
+      .filter(t => t.type === 'expense')
+      .reduce((acc, t) => {
+        acc[t.category] = (acc[t.category] || 0) + Number(t.amount);
+        return acc;
+      }, {} as Record<string, number>);
+
+    const categoryData = Object.entries(expensesByCategory).map(([name, value], index) => ({
+      name,
+      value,
+      color: COLORS[index % COLORS.length],
+    }));
+
+    // Group transactions by day for the last 7 days
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      return date.toISOString().split('T')[0];
+    }).reverse();
+
+    const weeklyData = last7Days.map(date => {
+      const dayTransactions = transactions.filter(t => 
+        t.transaction_date.split('T')[0] === date
+      );
+      
+      const income = dayTransactions
+        .filter(t => t.type === 'income')
+        .reduce((sum, t) => sum + Number(t.amount), 0);
+      
+      const expenses = dayTransactions
+        .filter(t => t.type === 'expense')
+        .reduce((sum, t) => sum + Number(t.amount), 0);
+
+      return {
+        name: new Date(date).toLocaleDateString('en', { weekday: 'short' }),
+        income,
+        expenses,
+      };
+    });
+
+    return { recentTransactions, categoryData, weeklyData };
+  }, [transactions]);
+
+  if (isLoading) {
+    return (
+      <div className="p-4 pb-20 bg-yellow-50 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading your financial data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 pb-20 bg-yellow-50 min-h-screen">
@@ -48,7 +90,7 @@ export const Dashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-yellow-700">Total Income</p>
-              <p className="text-2xl font-bold text-yellow-900">${totalIncome}</p>
+              <p className="text-2xl font-bold text-yellow-900">${totalIncome.toFixed(2)}</p>
             </div>
             <TrendingUp className="h-8 w-8 text-yellow-700" />
           </div>
@@ -58,7 +100,7 @@ export const Dashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-orange-700">Total Expenses</p>
-              <p className="text-2xl font-bold text-orange-900">${totalExpenses}</p>
+              <p className="text-2xl font-bold text-orange-900">${totalExpenses.toFixed(2)}</p>
             </div>
             <TrendingDown className="h-8 w-8 text-orange-700" />
           </div>
@@ -68,7 +110,9 @@ export const Dashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-indigo-700">Net Profit</p>
-              <p className="text-2xl font-bold text-indigo-900">${profit}</p>
+              <p className={`text-2xl font-bold ${profit >= 0 ? 'text-indigo-900' : 'text-red-900'}`}>
+                ${profit.toFixed(2)}
+              </p>
             </div>
             <DollarSign className="h-8 w-8 text-indigo-700" />
           </div>
@@ -108,50 +152,56 @@ export const Dashboard = () => {
       </Card>
 
       {/* Category Breakdown */}
-      <Card className="p-4 mb-6">
-        <h3 className="text-lg font-semibold mb-4">Expense Categories</h3>
-        <div className="h-48">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={categoryData}
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-              >
-                {categoryData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
+      {categoryData.length > 0 && (
+        <Card className="p-4 mb-6">
+          <h3 className="text-lg font-semibold mb-4">Expense Categories</h3>
+          <div className="h-48">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={categoryData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  {categoryData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value) => `$${Number(value).toFixed(2)}`} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+      )}
 
       {/* Recent Transactions */}
       <Card className="p-4">
         <h3 className="text-lg font-semibold mb-4">Recent Transactions</h3>
-        <div className="space-y-3">
-          {recentTransactions.map((transaction) => (
-            <div key={transaction.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-full ${transaction.type === 'income' ? 'bg-yellow-100' : 'bg-orange-100'}`}>
-                  <Receipt className={`h-4 w-4 ${transaction.type === 'income' ? 'text-yellow-600' : 'text-orange-600'}`} />
+        {recentTransactions.length === 0 ? (
+          <p className="text-gray-500 text-center py-8">No transactions yet. Start by adding your first transaction!</p>
+        ) : (
+          <div className="space-y-3">
+            {recentTransactions.map((transaction) => (
+              <div key={transaction.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-full ${transaction.type === 'income' ? 'bg-yellow-100' : 'bg-orange-100'}`}>
+                    <Receipt className={`h-4 w-4 ${transaction.type === 'income' ? 'text-yellow-600' : 'text-orange-600'}`} />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">{transaction.description}</p>
+                    <p className="text-sm text-gray-500">{transaction.category} • {transaction.time}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium text-gray-900">{transaction.description}</p>
-                  <p className="text-sm text-gray-500">{transaction.category} • {transaction.time}</p>
-                </div>
+                <p className={`font-semibold ${transaction.type === 'income' ? 'text-yellow-600' : 'text-orange-600'}`}>
+                  {transaction.type === 'income' ? '+' : '-'}${Math.abs(transaction.amount).toFixed(2)}
+                </p>
               </div>
-              <p className={`font-semibold ${transaction.type === 'income' ? 'text-yellow-600' : 'text-orange-600'}`}>
-                {transaction.type === 'income' ? '+' : ''}${Math.abs(transaction.amount)}
-              </p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </Card>
     </div>
   );

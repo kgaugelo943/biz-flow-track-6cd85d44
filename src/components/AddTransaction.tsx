@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowUp, Mic, Camera, Upload, ArrowDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useTransactions } from '@/hooks/useTransactions';
 
 interface AddTransactionProps {
   onBack: () => void;
@@ -19,6 +20,7 @@ export const AddTransaction = ({ onBack }: AddTransactionProps) => {
   const [category, setCategory] = useState('');
   const [type, setType] = useState<'income' | 'expense'>('income');
   const { toast } = useToast();
+  const { addTransaction } = useTransactions();
 
   const categories = {
     income: ['Sales', 'Services', 'Consulting', 'Other Income'],
@@ -59,7 +61,7 @@ export const AddTransaction = ({ onBack }: AddTransactionProps) => {
     }, 3000);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!amount || !description || !category) {
       toast({
         title: "Missing information",
@@ -69,16 +71,23 @@ export const AddTransaction = ({ onBack }: AddTransactionProps) => {
       return;
     }
 
-    toast({
-      title: "Transaction saved",
-      description: `${type === 'income' ? 'Income' : 'Expense'} of $${amount} recorded successfully.`,
-    });
+    try {
+      await addTransaction.mutateAsync({
+        description,
+        amount: parseFloat(amount),
+        type,
+        category,
+        transaction_date: new Date().toISOString(),
+      });
 
-    // Reset form
-    setAmount('');
-    setDescription('');
-    setCategory('');
-    onBack();
+      // Reset form
+      setAmount('');
+      setDescription('');
+      setCategory('');
+      onBack();
+    } catch (error) {
+      // Error handling is done in the mutation
+    }
   };
 
   return (
@@ -193,10 +202,11 @@ export const AddTransaction = ({ onBack }: AddTransactionProps) => {
       {/* Submit Button */}
       <Button 
         onClick={handleSubmit}
+        disabled={addTransaction.isPending}
         className="w-full h-12 text-lg font-semibold bg-indigo-600 hover:bg-indigo-700"
         size="lg"
       >
-        Save Transaction
+        {addTransaction.isPending ? 'Saving...' : 'Save Transaction'}
       </Button>
     </div>
   );
